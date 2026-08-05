@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Google Maps Business Collector</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <span class="icon">🗺️</span>
+        <h2>Google Maps Collector Settings</h2>
+      </div>
+    </div>
+
+    <div id="alertMessage" class="alert" style="display: none;"></div>
+
+    <form id="settingsForm">
+      <div class="section">
+        <h3>Backend Connection</h3>
+
+        <div class="field">
+          <label for="backendUrl">Backend URL</label>
+          <input type="url" id="backendUrl" required placeholder="http://127.0.0.1:8000">
+          <span class="hint">The base URL of your Laravel application backend.</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Collection & Upload Parameters</h3>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="batchSize">Batch Upload Size</label>
+            <input type="number" id="batchSize" min="1" max="500" value="50">
+            <span class="hint">Number of records per POST payload (Default: 50)</span>
+          </div>
+
+          <div class="field">
+            <label for="uploadInterval">Upload Interval (Seconds)</label>
+            <input type="number" id="uploadInterval" min="5" max="300" value="10">
+            <span class="hint">Delay between background batch uploads (Default: 10s)</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="collectionDelay">DOM Parsing Throttle (ms)</label>
+          <input type="number" id="collectionDelay" min="100" max="5000" value="1000">
+          <span class="hint">Conservative timing delay between DOM element inspections (Default: 1000ms)</span>
+        </div>
+
+        <div class="field checkbox-field">
+          <label>
+            <input type="checkbox" id="debugLogging">
+            <span>Enable Debug Console Logging</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="button-bar">
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+        <button type="button" id="testConnBtn" class="btn btn-secondary">Test Connection</button>
+        <button type="button" id="clearQueueBtn" class="btn btn-warning">Clear Offline Queue</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="../utils/storage.js"></script>
+  <script src="../utils/api.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

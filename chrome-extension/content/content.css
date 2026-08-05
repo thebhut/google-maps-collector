@@ -1,0 +1,63 @@
+/* Google Maps Business Collector - Simple Card Outlines */
+
+/* State 1: Scanning / Inspecting - White Border */
+.gmaps-collector-scanning {
+  border: 3px solid #ffffff !important;
+  outline: 3px solid #ffffff !important;
+  outline-offset: -2px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+}
+
+/* State 2: Lead Found - Green Border & Glow */
+.gmaps-collector-lead-found {
+  border: 3px solid #10b981 !important;
+  outline: 3px solid #10b981 !important;
+  outline-offset: -2px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.85) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+}
+
+/* State 3: Not a Lead / Skipped - Yellow Border */
+.gmaps-collector-not-lead {
+  border: 3px solid #f59e0b !important;
+  outline: 3px solid #f59e0b !important;
+  outline-offset: -2px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.7) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+}
+
+/* Badge overlay */
+.gmaps-collector-badge {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  z-index: 99999 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+  pointer-events: none !important;
+}
+
+.gmaps-collector-badge.scanning {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.gmaps-collector-badge.found {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.gmaps-collector-badge.skipped {
+  background: #f59e0b !important;
+  color: #0f172a !important;
+}

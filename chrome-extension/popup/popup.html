@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Maps Business Collector</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="logo">
+        <span class="icon">🗺️</span>
+        <span class="title">Google Maps Business Collector</span>
+      </div>
+      <a href="#" id="optionsBtn" title="Extension Settings">⚙️</a>
+    </div>
+
+    <div class="status-banner" id="statusBanner">
+      <span class="dot" id="statusDot">●</span>
+      <span id="statusText">Checking connection...</span>
+    </div>
+
+    <div class="info-group">
+      <label>Current Page:</label>
+      <div class="page-indicator" id="pageIndicator">Checking tab...</div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-box">
+        <span class="metric-label">Businesses Found:</span>
+        <span class="metric-value" id="detectedCount">0</span>
+      </div>
+      <div class="metric-box">
+        <span class="metric-label">Businesses Collected:</span>
+        <span class="metric-value green" id="uploadedCount">0</span>
+      </div>
+      <div class="metric-box">
+        <span class="metric-label">Duplicates:</span>
+        <span class="metric-value amber" id="duplicatesCount">0</span>
+      </div>
+      <div class="metric-box">
+        <span class="metric-label">Errors:</span>
+        <span class="metric-value red" id="errorsCount">0</span>
+      </div>
+    </div>
+
+    <div class="queue-notice" id="queueNotice" style="display: none;">
+      <span id="queueText">0 records waiting to upload.</span>
+    </div>
+
+    <div class="actions">
+      <button id="startBtn" class="btn btn-primary" disabled>Start Collection</button>
+      <button id="stopBtn" class="btn btn-danger" style="display: none;">Stop Collection</button>
+    </div>
+  </div>
+
+  <script src="../utils/storage.js"></script>
+  <script src="../utils/api.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
