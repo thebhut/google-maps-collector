@@ -21,6 +21,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Businesses Management
     Route::get('/businesses', [BusinessController::class, 'index'])->name('businesses.index');
+    Route::get('/businesses/export/pdf/all', [BusinessController::class, 'exportPdfAll'])->name('businesses.export.pdf.all');
+    Route::get('/businesses/export/pdf/filtered', [BusinessController::class, 'exportPdfFiltered'])->name('businesses.export.pdf.filtered');
+    Route::post('/businesses/export/pdf/selected', [BusinessController::class, 'exportPdfSelected'])->name('businesses.export.pdf.selected');
     Route::get('/businesses/export/all', [BusinessController::class, 'exportAll'])->name('businesses.export.all');
     Route::get('/businesses/export/filtered', [BusinessController::class, 'exportFiltered'])->name('businesses.export.filtered');
     Route::post('/businesses/export/selected', [BusinessController::class, 'exportSelected'])->name('businesses.export.selected');

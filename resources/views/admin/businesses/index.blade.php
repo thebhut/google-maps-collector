@@ -33,29 +33,41 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-            <!-- Export All -->
-            <a href="{{ route('admin.businesses.export.all') }}" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs rounded-xl transition-all shadow-lg shadow-emerald-600/20 flex items-center space-x-2">
+            <!-- Export All PDF -->
+            <a href="{{ route('admin.businesses.export.pdf.all') }}" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs rounded-xl transition-all shadow-lg shadow-emerald-600/20 flex items-center space-x-2" title="Download all businesses as PDF report">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span>Export All CSV</span>
+                <span>Export All PDF</span>
             </a>
 
-            <!-- Export Filtered -->
-            <a href="{{ route('admin.businesses.export.filtered', request()->query()) }}" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center space-x-2">
+            <!-- Export Filtered PDF -->
+            <a href="{{ route('admin.businesses.export.pdf.filtered', request()->query()) }}" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center space-x-2" title="Download current filtered businesses as PDF report">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                <span>Export Current Filter</span>
+                <span>Export Current Filter (PDF)</span>
             </a>
 
-            <!-- Export Selected -->
-            <form action="{{ route('admin.businesses.export.selected') }}" method="POST" inline x-show="selectedIds.length > 0">
+            <!-- Export Selected PDF -->
+            <form action="{{ route('admin.businesses.export.pdf.selected') }}" method="POST" inline x-show="selectedIds.length > 0">
                 @csrf
                 <template x-for="id in selectedIds" :key="id">
                     <input type="hidden" name="ids[]" :value="id">
                 </template>
                 <button type="submit" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs rounded-xl transition-all shadow-lg shadow-purple-600/20 flex items-center space-x-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    <span>Export Selected (<span x-text="selectedIds.length"></span>)</span>
+                    <span>Export Selected PDF (<span x-text="selectedIds.length"></span>)</span>
                 </button>
             </form>
+
+            <!-- Export CSV Option -->
+            <div x-data="{ openCsv: false }" class="relative">
+                <button @click="openCsv = !openCsv" @click.outside="openCsv = false" type="button" class="px-3 py-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs rounded-xl border border-slate-700/80 transition-all flex items-center space-x-1.5" title="More export formats">
+                    <span>CSV</span>
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div x-show="openCsv" x-transition class="absolute right-0 mt-2 w-44 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl py-1.5 z-50 text-xs">
+                    <a href="{{ route('admin.businesses.export.all') }}" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white">Export All (CSV)</a>
+                    <a href="{{ route('admin.businesses.export.filtered', request()->query()) }}" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white">Export Filter (CSV)</a>
+                </div>
+            </div>
 
             <!-- Bulk Delete Trigger (Section 27) -->
             <button type="button" @click="showDeleteModal = true" x-show="selectedIds.length > 0" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-500 text-white font-medium text-xs rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center space-x-2">

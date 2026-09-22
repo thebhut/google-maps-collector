@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Services\CsvExportService;
+use App\Services\PdfExportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,8 +13,10 @@ use Illuminate\View\View;
 
 class BusinessController extends Controller
 {
-    public function __construct(protected CsvExportService $csvService)
-    {
+    public function __construct(
+        protected CsvExportService $csvService,
+        protected PdfExportService $pdfService
+    ) {
     }
 
     /**
@@ -143,10 +146,47 @@ class BusinessController extends Controller
     }
 
     /**
+     * Export All Businesses (PDF)
+     */
+     public function exportPdfAll(Request $request)
+     {
+         $query = Business::where('user_id', $request->user()->id)->latest('id');
+         return $this->pdfService->export($query, 'all_businesses_' . date('Y-m-d') . '.pdf', 'All Collected Businesses');
+     }
+
+     /**
+      * Export Filtered Businesses (PDF)
+      */
+     public function exportPdfFiltered(Request $request)
+     {
+         $query = $this->buildFilterQuery($request);
+         return $this->pdfService->export($query, 'filtered_businesses_' . date('Y-m-d') . '.pdf', 'Filtered Search Results');
+     }
+
+     /**
+      * Export Selected Businesses (PDF)
+      */
+     public function exportPdfSelected(Request $request)
+     {
+         $request->validate([
+             'ids' => 'required|array|min:1',
+             'ids.*' => 'integer',
+         ]);
+
+         $ids = $request->input('ids');
+         $query = Business::where('user_id', $request->user()->id)->whereIn('id', $ids)->latest('id');
+
+         return $this->pdfService->export($query, 'selected_businesses_' . date('Y-m-d') . '.pdf', 'Selected Businesses (' . count($ids) . ' records)');
+     }
+
+    /**
      * Stream CSV Export All
      */
     public function exportAll(Request $request)
     {
+        if ($request->query('format') === 'pdf') {
+            return $this->exportPdfAll($request);
+        }
         $query = Business::where('user_id', $request->user()->id)->latest('id');
         return $this->csvService->export($query, 'all_businesses_' . date('Y-m-d') . '.csv');
     }
@@ -155,6 +195,37 @@ class BusinessController extends Controller
      * Stream CSV Export Filtered
      */
     public function exportFiltered(Request $request)
+    {
+        if ($request->query('format') === 'pdf') {
+            return $this->exportPdfFiltered($request);
+        }
+        $query = $this->buildFilterQuery($request);
+        return $this->csvService->export($query, 'filtered_businesses_' . date('Y-m-d') . '.csv');
+    }
+
+    /**
+     * Stream CSV Export Selected IDs
+     */
+    public function exportSelected(Request $request)
+    {
+        if ($request->input('format') === 'pdf') {
+            return $this->exportPdfSelected($request);
+        }
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+        ]);
+
+        $ids = $request->input('ids');
+        $query = Business::where('user_id', $request->user()->id)->whereIn('id', $ids)->latest('id');
+
+        return $this->csvService->export($query, 'selected_businesses_' . date('Y-m-d') . '.csv');
+    }
+
+    /**
+     * Helper to build filter query for exports
+     */
+    protected function buildFilterQuery(Request $request)
     {
         $userId = $request->user()->id;
         $query = Business::where('user_id', $userId);
@@ -191,22 +262,6 @@ class BusinessController extends Controller
             $query->whereNotNull('website')->where('website', '!=', '');
         }
 
-        return $this->csvService->export($query, 'filtered_businesses_' . date('Y-m-d') . '.csv');
-    }
-
-    /**
-     * Stream CSV Export Selected IDs
-     */
-    public function exportSelected(Request $request)
-    {
-        $request->validate([
-            'ids' => 'required|array|min:1',
-            'ids.*' => 'integer',
-        ]);
-
-        $ids = $request->input('ids');
-        $query = Business::where('user_id', $request->user()->id)->whereIn('id', $ids)->latest('id');
-
-        return $this->csvService->export($query, 'selected_businesses_' . date('Y-m-d') . '.csv');
+        return $query;
     }
 }

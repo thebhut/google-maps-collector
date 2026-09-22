@@ -118,4 +118,63 @@ class BusinessAdminTest extends TestCase
         $this->assertStringContainsString('Phone', $content);
         $this->assertStringContainsString('Export Business', $content);
     }
+
+    public function test_pdf_export_all_downloads_pdf(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Business::create([
+            'user_id' => $user->id,
+            'name' => 'PDF Test Business',
+            'phone' => '+1234567890',
+            'city' => 'Ahmedabad',
+            'rating' => 4.8,
+        ]);
+
+        $response = $this->get('/admin/businesses/export/pdf/all');
+
+        $response->assertStatus(200);
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertStringContainsString('.pdf', $response->headers->get('Content-Disposition'));
+    }
+
+    public function test_pdf_export_filtered_downloads_pdf(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Business::create([
+            'user_id' => $user->id,
+            'name' => 'PDF Filter Business',
+            'phone' => '+1234567890',
+            'city' => 'Surat',
+            'category' => 'Dental Clinic',
+        ]);
+
+        $response = $this->get('/admin/businesses/export/pdf/filtered?city=Surat');
+
+        $response->assertStatus(200);
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
+    }
+
+    public function test_pdf_export_selected_downloads_pdf(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $biz = Business::create([
+            'user_id' => $user->id,
+            'name' => 'PDF Selected Business',
+            'phone' => '+1234567890',
+            'city' => 'Rajkot',
+        ]);
+
+        $response = $this->post('/admin/businesses/export/pdf/selected', [
+            'ids' => [$biz->id],
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
+    }
 }
